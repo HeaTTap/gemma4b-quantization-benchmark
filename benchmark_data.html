@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemma 4B Quantization Benchmark & Telemetry Dashboard</title>
+  <!-- Google Fonts: Inter and Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(17, 24, 39, 0.6);
+      --text-color: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --success-color: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --error-color: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.15);
+      --warning-color: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --border-color: rgba(255, 255, 255, 0.06);
+      --table-header-bg: #1f2937;
+      --table-row-hover: rgba(255, 255, 255, 0.02);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 2.5rem;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header Section */
+    header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Grid Layouts */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      margin-bottom: 1.25rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 4px solid var(--accent-blue);
+      padding-left: 0.75rem;
+    }
+
+    .card-title.accuracy-title {
+      border-left-color: var(--accent-purple);
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: var(--table-header-bg);
+      color: #fff;
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--table-row-hover);
+    }
+
+    /* Table Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-success {
+      color: var(--success-color);
+      background-color: var(--success-bg);
+    }
+
+    .badge-error {
+      color: var(--error-color);
+      background-color: var(--error-bg);
+    }
+
+    .badge-warning {
+      color: var(--warning-color);
+      background-color: var(--warning-bg);
+    }
+
+    /* Qualitative analysis grids */
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .metric-item:last-child {
+      border-bottom: none;
+    }
+
+    .metric-label {
+      color: var(--text-secondary);
+    }
+
+    .metric-value {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .analysis-list {
+      margin-top: 1.5rem;
+    }
+
+    .analysis-block {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      padding: 1.25rem;
+      border-left: 4px solid var(--accent-blue);
+      margin-bottom: 1.5rem;
+    }
+
+    .analysis-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .analysis-block.warning {
+      border-left-color: var(--warning-color);
+    }
+
+    .analysis-block.success {
+      border-left-color: var(--success-color);
+    }
+
+    .analysis-block h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .analysis-block p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .footnote {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Gemma 4B Quantization Benchmark Dashboard</h1>
+      <p>Interactive telemetry and zero-shot accuracy profiles comparing Gemma 4B Q4 (Quantized GGUF) and Gemma 4B BF16 (Uncompressed Baseline) under local Edge deployment conditions.</p>
+    </header>
+
+    <!-- SECTION 1: Deployment & Telemetry -->
+    <section id="telemetry">
+      <h2 style="margin-bottom: 1.5rem; color: #fff; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">I. Deployment & Hardware Telemetry</h2>
+      
+      <div class="grid grid-2">
+        <!-- Table I: Ollama Model specifications -->
+        <div class="card">
+          <div class="card-title">Table I. Ollama Model Specifications</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model Name</th>
+                  <th>Model ID</th>
+                  <th>Disk Size</th>
+                  <th>Processor Offload</th>
+                  <th>Context Window</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 500; color: #60a5fa;">gemma4:e2b-it-q4_K_M</td>
+                  <td><code>7fbdbf8f5e45</code></td>
+                  <td>7.7 GB</td>
+                  <td><span class="badge badge-success">100% GPU</span></td>
+                  <td>4096</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 500; color: #c084fc;">gemma4:e2b-it-bf16</td>
+                  <td><code>850bc7fea32f</code></td>
+                  <td>11 GB</td>
+                  <td><span class="badge badge-warning">59% CPU / 41% GPU</span></td>
+                  <td>4096</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footnote">Data source: <code>ollama ps</code> daemon trace outputs.</div>
+        </div>
+
+        <!-- Table II: Hardware resource utilization -->
+        <div class="card">
+          <div class="card-title">Table II. Telemetry & Hardware Utilization</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Telemetry Metric</th>
+                  <th>Gemma 4B Q4 (100% GPU)</th>
+                  <th>Gemma 4B BF16 (CPU/GPU Split)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="metric-label">CPU Usage</td>
+                  <td class="metric-value">14%</td>
+                  <td class="metric-value" style="color: var(--warning-color);">28%</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">CPU Temperature</td>
+                  <td class="metric-value">63&deg;C</td>
+                  <td class="metric-value" style="color: var(--error-color); font-weight: 700;">82&deg;C</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">CPU Package Power</td>
+                  <td class="metric-value">22.9 W</td>
+                  <td class="metric-value">34.9 W</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">GPU0 Core Usage</td>
+                  <td class="metric-value" style="color: var(--success-color); font-weight: 700;">85%</td>
+                  <td class="metric-value">37%</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">GPU0 Temperature</td>
+                  <td class="metric-value">56&deg;C</td>
+                  <td class="metric-value">68&deg;C</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">GPU0 Power Draw</td>
+                  <td class="metric-value">57.0 W</td>
+                  <td class="metric-value">34.6 W</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">GPU0 VRAM Allocated</td>
+                  <td class="metric-value">7.4 GB / 8.0 GB</td>
+                  <td class="metric-value">4.9 GB / 8.0 GB</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">System RAM Utilization</td>
+                  <td class="metric-value">4.42 GB (29%)</td>
+                  <td class="metric-value" style="color: var(--warning-color);">10.6 GB (70%)</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">Ollama Resident Memory (RSS)</td>
+                  <td class="metric-value">1.2 GB</td>
+                  <td class="metric-value">7.4 GB</td>
+                </tr>
+                <tr>
+                  <td class="metric-label">Ollama Process CPU Usage</td>
+                  <td class="metric-value">10.5%</td>
+                  <td class="metric-value">24.3%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footnote">Data source: <code>btop</code> process trace telemetry snapshots.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Accuracy & Logical Performance -->
+    <section id="accuracy" style="margin-top: 4.5rem;">
+      <h2 style="margin-bottom: 1.5rem; color: #fff; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">II. Zero-Shot Logical Accuracy Benchmark</h2>
+      
+      <div class="grid grid-2">
+        <!-- Table III: BF16 Accuracy -->
+        <div class="card">
+          <div class="card-title accuracy-title">Table III. Gemma 4B BF16 Benchmark Results</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Logical Domain</th>
+                  <th>Correct</th>
+                  <th>Model Answer</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Q1</td>
+                  <td>State Tracking (Coin)</td>
+                  <td>A</td>
+                  <td>A (Red box)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q2</td>
+                  <td>Knight/Knave/Spy Logic</td>
+                  <td>B</td>
+                  <td>B (Yolanda)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q3</td>
+                  <td>Modular Arithmetic</td>
+                  <td>B</td>
+                  <td>B (14)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q4</td>
+                  <td>Recursive Bitwise</td>
+                  <td>C</td>
+                  <td>C (24)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q5</td>
+                  <td>Cheryl's Birthday</td>
+                  <td>B</td>
+                  <td>A (May 16)</td>
+                  <td><span class="badge badge-error">Incorrect</span></td>
+                </tr>
+                <tr>
+                  <td>Q6</td>
+                  <td>Causal / Counterfactual</td>
+                  <td>B</td>
+                  <td>B (True)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q7</td>
+                  <td>3D Die Rotation</td>
+                  <td>C</td>
+                  <td>C (5)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q8</td>
+                  <td>Game Theory SPNE</td>
+                  <td>C</td>
+                  <td>C (E, A)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q9</td>
+                  <td>Linguistic Negation</td>
+                  <td>B</td>
+                  <td>B (Scenario B)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q10</td>
+                  <td>Bayesian Probability</td>
+                  <td>A</td>
+                  <td>A (5%)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footnote">Overall Score: <strong>90% (9/10) Correct</strong>. Failed Cheryl's Birthday (epistemic reasoning).</div>
+        </div>
+
+        <!-- Table IV: Q4 Accuracy -->
+        <div class="card">
+          <div class="card-title accuracy-title">Table IV. Gemma 4B Q4 Benchmark Results</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Logical Domain</th>
+                  <th>Correct</th>
+                  <th>Model Answer</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Q1</td>
+                  <td>State Tracking (Coin)</td>
+                  <td>A</td>
+                  <td>A (Red box)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q2</td>
+                  <td>Knight/Knave/Spy Logic</td>
+                  <td>B</td>
+                  <td>B (Yolanda)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q3</td>
+                  <td>Modular Arithmetic</td>
+                  <td>B</td>
+                  <td>B (14)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q4</td>
+                  <td>Recursive Bitwise</td>
+                  <td>C</td>
+                  <td>C (24)</td>
+                  <td><span class="badge badge-warning">Correct*</span></td>
+                </tr>
+                <tr>
+                  <td>Q5</td>
+                  <td>Cheryl's Birthday</td>
+                  <td>B</td>
+                  <td>A (May 16)</td>
+                  <td><span class="badge badge-error">Incorrect</span></td>
+                </tr>
+                <tr>
+                  <td>Q6</td>
+                  <td>Causal / Counterfactual</td>
+                  <td>B</td>
+                  <td>B (True)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q7</td>
+                  <td>3D Die Rotation</td>
+                  <td>C</td>
+                  <td>A (1)</td>
+                  <td><span class="badge badge-error">Incorrect</span></td>
+                </tr>
+                <tr>
+                  <td>Q8</td>
+                  <td>Game Theory SPNE</td>
+                  <td>C</td>
+                  <td>C (E, A)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q9</td>
+                  <td>Linguistic Negation</td>
+                  <td>B</td>
+                  <td>B (Scenario B)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+                <tr>
+                  <td>Q10</td>
+                  <td>Bayesian Probability</td>
+                  <td>A</td>
+                  <td>A (5%)</td>
+                  <td><span class="badge badge-success">Correct</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="footnote">Overall Score: <strong>80% (8/10) Correct</strong>. *Q4 model arrived at the correct answer through a flawed mathematical trace.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Qualitative Analysis -->
+    <section id="analysis" style="margin-top: 1.5rem; margin-bottom: 4rem;">
+      <div class="card">
+        <div class="card-title">Qualitative Analysis: Decoupling the "Intelligence Gap"</div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+          Evaluating the raw response logs shows that quantization errors manifest primarily in multi-step constraint evaluation and spatial dimension projection. Below is the detailed breakdown:
+        </p>
+
+        <div class="analysis-list">
+          <!-- Block 1 -->
+          <div class="analysis-block warning">
+            <h4>1) 3D Spatial Rotation and Projection Defect (Q7)</h4>
+            <p>
+              In the 3D die rotation problem, the uncompressed BF16 model successfully tracked all three rotations (S0 &rarr; S1 &rarr; S2 &rarr; S3) to correctly deduce that the number on the front face would be 5 (Option C). The Q4 model, however, lost orientation during the spatial transformations, concluding that the front face was 1 (Option A). This indicates that the geometric/spatial semantic relationships embedded in the model's high-dimensional weights are highly sensitive to the precision loss of 4-bit quantization.
+            </p>
+          </div>
+
+          <!-- Block 2 -->
+          <div class="analysis-block warning">
+            <h4>2) Mathematical Hallucination & Option-Forced Fitting (Q4)</h4>
+            <p>
+              In the recursive bitwise function <code>mystery(13, 11)</code>, the BF16 model performed the bitwise operations correctly, identifying that <code>16 & 8 = 0</code>, which naturally terminated the recursion at 24 (Option C) with the explanation that the function calculates binary addition (13 + 11 = 24). In contrast, the Q4 model suffered from mathematical hallucinations during the dry-run, claiming that <code>16 & 8 = 8</code> and <code>24 & 16 = 16</code>. This incorrect arithmetic led the model to evaluate the recursion to 40. Realizing that 40 was not among the multiple-choice options, the Q4 model performed an arbitrary post-hoc rationalization, claiming the recursion should halt at the intermediate state of 24 to match Option C. This demonstrates that while quantized models can sometimes select the correct final option due to multiple-choice constraint boundaries, their underlying reasoning is prone to computational noise.
+            </p>
+          </div>
+
+          <!-- Block 3 -->
+          <div class="analysis-block success">
+            <h4>3) High-Order Epistemic Reasoning Limits (Q5)</h4>
+            <p>
+              Both models failed the Cheryl's Birthday logic puzzle. The BF16 model identified the logical constraints but declared the problem "ambiguous" and selected a placeholder (May 16), while the Q4 model incorrectly executed the elimination steps. This suggests that complex multi-agent reasoning is a boundary limit for the base 4B architecture size, regardless of quantization.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

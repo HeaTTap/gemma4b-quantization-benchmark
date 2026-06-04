@@ -1,0 +1,8 @@
+❯ ollama ps
+NAME                    ID              SIZE      PROCESSOR    CONTEXT    UNTIL
+gemma4:e2b-it-q4_K_M    7fbdbf8f5e45    7.7 GB    100% GPU     4096       3 minutes from now
+
+~
+❯ ollama ps
+NAME                  ID              SIZE     PROCESSOR          CONTEXT    UNTIL
+gemma4:e2b-it-bf16    850bc7fea32f    11 GB    59%/41% CPU/GPU    4096       4 minutes from now

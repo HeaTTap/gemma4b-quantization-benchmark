@@ -1,0 +1,193 @@
+Large Language Model Quantization Benchmark
+10 Hard and Unique Questions for Testing the "Intelligence Gap"
+================================================================
+
+Domain: Zero-Shot Multiple Choice Accuracy (Graded: 0 or 1)
+Designed for: Comparing FP16 vs 8-bit vs 4-bit GGUF models
+
+---
+
+Question 1: Temporal & Spatial State Tracking
+---------------------------------------------
+There are three colored boxes: Red, Blue, and Green.
+1. Initially, a gold coin is placed in the Red box.
+2. Alice swaps the contents of the Red box and the Blue box.
+3. Bob swaps the contents of the Blue box and the Green box.
+4. Alice swaps the contents of the Red box and the Blue box again.
+5. Bob takes whatever is in the Green box and puts it into the Red box, while throwing away whatever was in the Red box.
+6. Finally, Charlie swaps the contents of the Blue box and the Green box.
+
+Where is the gold coin now?
+A) Red box
+B) Blue box
+C) Green box
+D) It was thrown away
+
+Correct Answer: A
+Rationale: Requires multi-step tracking of state modifications and variable reassignments. Quantized models often lose track of the gold coin's location during step 5's conditional override.
+
+---
+
+Question 2: Epistemic Logic & Self-Referential Deduction
+--------------------------------------------------------
+In a room, there are three people: Xavier, Yolanda, and Zach. One is a Knight (always tells the truth), one is a Knave (always lies), and one is a Spy (can lie or tell the truth).
+- Xavier says: "Zach is the Knave."
+- Yolanda says: "Xavier is the Knight."
+- Zach says: "I am the Spy."
+
+Who is the Spy?
+A) Xavier
+B) Yolanda
+C) Zach
+D) It is impossible to determine
+
+Correct Answer: B
+Rationale: Requires analyzing branching logical statements. Quantized LLMs tend to fail to check all constraints (e.g., that if Zach is Knave, Yolanda must be Spy, which is a consistent solution).
+
+---
+
+Question 3: Modular Arithmetic & Constraint Satisfaction
+--------------------------------------------------------
+A positive integer N is less than 200.
+- When N is divided by 5, the remainder is 3.
+- When N is divided by 7, the remainder is 4.
+- When N is divided by 9, the remainder is 5.
+
+What is the sum of the digits of N?
+A) 11
+B) 14
+C) 17
+D) 20
+
+Correct Answer: B
+Rationale: Tests basic number theory and constraint programming (Chinese Remainder Theorem) with numbers outside standard memorized tables.
+
+---
+
+Question 4: Algorithmic Logic & Code Execution Trace
+----------------------------------------------------
+Consider the following pseudo-code function:
+
+def mystery(x, y):
+    if y == 0:
+        return x
+    else:
+        return mystery(x ^ y, (x & y) << 1)
+
+What is the output of mystery(13, 11)?
+A) 2
+B) 6
+C) 24
+D) 26
+
+Correct Answer: C
+Rationale: The code implements a recursive half-adder to add two integers (x + y). Quantized models are poor at dry-running binary logic operations and recursion depth.
+
+---
+
+Question 5: Multi-Agent Epistemic Logic
+---------------------------------------
+Albert and Bernard want to know when Cheryl's birthday is. Cheryl gives them a list of 10 possible dates:
+- May 15, May 16, May 19
+- June 17, June 18
+- July 14, July 16
+- August 14, August 15, August 17
+
+Cheryl tells Albert the month and Bernard the day of her birthday separately.
+- Albert says: "I don't know when Cheryl's birthday is, but I know that Bernard doesn't know either."
+- Bernard says: "At first I didn't know when Cheryl's birthday is, but now I know."
+- Albert says: "Then I also know when Cheryl's birthday is."
+
+When is Cheryl's birthday?
+A) May 16
+B) July 16
+C) August 15
+D) June 17
+
+Correct Answer: B
+Rationale: Classic Cheryl's Birthday puzzle. Quantized models struggle with the deductive elimination based on what another agent "knows" at distinct stages.
+
+---
+
+Question 6: Causal Inference & Counterfactual Reasoning
+-------------------------------------------------------
+Consider a causal network with four binary variables: A (alarm set), B (power outage), C (clock stops), and D (oversleeping).
+- A and B are independent root causes.
+- C is true if and only if B is true OR A is false (C = B or not A).
+- D is true if and only if C is true (D = C).
+
+Suppose we observe that the clock did not stop (not C) and the person did not oversleep (not D). If we were to hypothetically intervene to turn off the alarm (forcing A = False), what would be the counterfactual state of D?
+A) D would remain False
+B) D would become True
+C) D could be either True or False with equal probability
+D) The scenario is logically impossible
+
+Correct Answer: B
+Rationale: Tests the do-calculus concept. Quantized models confuse conditioning (observation) with intervention (setting a node value), failing to compute the correct counterfactual path.
+
+---
+
+Question 7: Spatial and Rotational Reasoning in 3D Space
+--------------------------------------------------------
+A standard six-sided die has opposite faces that sum to 7 (1 is opposite 6, 2 is opposite 5, 3 is opposite 4).
+- The die is placed on a table with 1 on the top face, 2 on the front face (facing you), and 3 on the right face.
+- First, you roll the die 90 degrees forward (towards you).
+- Second, you roll the die 90 degrees to the right.
+- Third, you rotate the die 90 degrees clockwise (looking down from the top).
+
+What number is now on the front face (facing you)?
+A) 1
+B) 3
+C) 5
+D) 6
+
+Correct Answer: C
+Rationale: Demands keeping track of dynamic 3D rotational coordinate transformations, which is highly sensitive to the model's spatial reasoning capabilities.
+
+---
+
+Question 8: Game Theory & Backward Induction
+--------------------------------------------
+Two firms, Firm A and Firm B, compete in a sequential market game:
+- Firm A decides first whether to Enter (E) or Stay Out (S).
+- If Firm A chooses Stay Out, Firm A gets a payoff of 0, and Firm B gets a payoff of 10.
+- If Firm A chooses Enter, Firm B then chooses whether to Fight (F) or Accommodate (A).
+- If Firm B Fights, both firms get a payoff of -5.
+- If Firm B Accommodates, Firm A gets a payoff of 4, and Firm B gets a payoff of 2.
+
+What is the Subgame Perfect Nash Equilibrium (SPNE) of this game?
+A) (Enter, Fight)
+B) (Stay Out, Fight)
+C) (Enter, Accommodate)
+D) (Stay Out, Accommodate)
+
+Correct Answer: C
+Rationale: Requires the model to perform backward induction (recognizing B chooses A if A enters, thus A chooses E) rather than simple greedy decision-making.
+
+---
+
+Question 9: Linguistic Negation and Converse Traps
+--------------------------------------------------
+Consider the statement: "No student who did not study failed the exam unless they were careless."
+Which of the following scenarios directly contradicts this statement?
+A) A student studied, was not careless, and failed the exam.
+B) A student did not study, was not careless, and failed the exam.
+C) A student did not study, was careless, and failed the exam.
+D) A student studied, was careless, and passed the exam.
+
+Correct Answer: B
+Rationale: Syntactic and semantic parsing of nested conditionals, double negatives ("No... did not... failed"), and exception clauses ("unless") are highly sensitive to quantization degradation.
+
+---
+
+Question 10: Probability and Bayesian Inference
+------------------------------------------------
+A rare disease affects 0.1% of the population. A diagnostic test for the disease has a 99% sensitivity (true positive rate) and a 2% false positive rate.
+If a randomly selected person tests positive, what is the probability that they actually have the disease (rounded to the nearest percent)?
+A) 5%
+B) 33%
+C) 47%
+D) 99%
+
+Correct Answer: A
+Rationale: Tests Bayesian calculation. Quantized LLMs frequently make base rate fallacy errors or arithmetic rounding mistakes due to precision loss.
