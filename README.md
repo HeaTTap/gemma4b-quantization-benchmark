@@ -1,6 +1,6 @@
-# Gemma 4B Quantization Benchmark & Telemetry
+# Gemma 4-e2B Quantization Benchmark & Telemetry
 
-An empirical study and benchmark evaluating the impact of **Post-Training Quantization (PTQ)** on inference throughput, hardware resource utilization, and logical accuracy in the **Gemma 4B** model. 
+An empirical study and benchmark evaluating the impact of **Post-Training Quantization (PTQ)** on inference throughput, hardware resource utilization, and logical accuracy in the **Gemma 4-e2B** model. 
 
 This repository contains the completed research paper and the companion interactive telemetry dashboard.
 
@@ -8,7 +8,7 @@ This repository contains the completed research paper and the companion interact
 
 ## 📂 Repository Contents
 
-* 📄 **[RMCS UTS Q5 Completed.docx](RMCS%20UTS%20Q5%20Completed.docx)**: The complete, academic-formatted research paper (IEEE template) containing introduction, methodology, quantitative results analysis, and conclusions.
+* 📄 **[paper gemma4.docx](paper%20gemma4.docx)**: The complete, academic-formatted research paper (IEEE template) containing introduction, methodology, quantitative results analysis, and conclusions.
 * 📊 **[benchmark_data.html](benchmark_data.html)**: A premium, responsive HTML dashboard containing interactive tables for model deployment configurations, hardware telemetry loads, and question-by-question benchmark accuracy comparisons.
 
 ---
@@ -18,12 +18,12 @@ This repository contains the completed research paper and the companion interact
 Our benchmarks reveal a sharp **performance vs. precision trade-off** when deploying quantized models locally on consumer edge hardware (NVIDIA GPU with 8.0 GB VRAM):
 
 ### 1. Telemetry & Throughput Performance
-* **Gemma 4B Q4 (4-bit Quantized GGUF)**:
+* **Gemma 4-e2B Q4 (4-bit Quantized GGUF)**:
   * **Memory Size**: 7.7 GB (fits entirely in GPU VRAM).
   * **Offload Status**: 100% GPU-accelerated.
   * **Throughput**: **106.8 tokens/second** (average generation speed).
   * **CPU Load**: 14% utilization, keeping temperatures stable at 63°C.
-* **Gemma 4B BF16 (Uncompressed Baseline)**:
+* **Gemma 4-e2B BF16 (Uncompressed Baseline)**:
   * **Memory Size**: 11.0 GB (exceeds VRAM capacity).
   * **Offload Status**: Split offload (59% CPU / 41% GPU).
   * **Throughput**: **25.5 tokens/second** (average generation speed).

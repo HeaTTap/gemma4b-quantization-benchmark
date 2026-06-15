@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infographic Poster: Evaluating Post-Training Quantization on Gemma 4 e2B</title>
+  <!-- Google Fonts: Plus Jakarta Sans, Outfit, and Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-poster: #eef2f7;
+      --card-white: #ffffff;
+      --card-dark: #112d4e;
+      --accent-blue: #3f72af;
+      --text-dark: #112d4e;
+      --text-muted: #4e607a;
+      --success: #0f9d58;
+      --error: #db4437;
+      --warn: #f4b400;
+      --border-light: rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-poster);
+      color: #333;
+      padding: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .poster {
+      width: 100%;
+      max-width: 1280px;
+      background-color: var(--bg-poster);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* HEADER */
+    .header-card {
+      background: var(--card-white);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo-container {
+      background-color: #f0f4f9;
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+      border: 1px solid var(--border-light);
+    }
+
+    .logo-text-top {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .logo-text-top svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent-blue);
+    }
+
+    .logo-text-bottom {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+      letter-spacing: 0.05em;
+    }
+
+    .header-text {
+      flex-grow: 1;
+    }
+
+    .header-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .authors-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+      border-top: 1px solid var(--border-light);
+      padding-top: 0.75rem;
+    }
+
+    .author-block {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .author-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 0.2rem;
+    }
+
+    .author-details {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    /* GRID LAYOUT */
+    .poster-grid {
+      display: grid;
+      grid-template-columns: 28% 36% 36%;
+      gap: 1.5rem;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* CARDS */
+    .card {
+      background-color: var(--card-white);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card.dark {
+      background-color: var(--card-dark);
+      color: #ffffff;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card.dark .card-title {
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+    }
+
+    /* Checklist Style */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      list-style: none;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .checklist-icon {
+      margin-top: 0.15rem;
+      min-width: 18px;
+      height: 18px;
+      background-color: rgba(63, 114, 175, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card.dark .checklist-icon {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .checklist-icon svg {
+      width: 10px;
+      height: 10px;
+      fill: none;
+      stroke: var(--accent-blue);
+      stroke-width: 3;
+    }
+
+    .card.dark .checklist-icon svg {
+      stroke: #ffffff;
+    }
+
+    /* Tables */
+    .table-container {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+    }
+
+    td {
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid var(--border-light);
+      color: #333333;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Badge styles */
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .badge-success {
+      background-color: rgba(15, 157, 88, 0.15);
+      color: var(--success);
+    }
+
+    .badge-error {
+      background-color: rgba(219, 68, 55, 0.15);
+      color: var(--error);
+    }
+
+    .badge-warn {
+      background-color: rgba(244, 180, 0, 0.15);
+      color: var(--warn);
+    }
+
+    /* Figures / Graphics */
+    .fig-placeholder {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background-color: #fafbfc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .fig-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* CSS Bar Chart */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .bar-label {
+      min-width: 120px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .bar-track {
+      flex-grow: 1;
+      height: 18px;
+      background-color: #eef2f7;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), #8b5cf6);
+      border-radius: 4px;
+    }
+
+    .bar-val {
+      min-width: 60px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Left side image decoration */
+    .side-img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Section Hasil Utama Banner */
+    .hasil-utama-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-align: center;
+      margin: 0.5rem 0;
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 0.25rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* References serif styling */
+    .ref-list {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      color: #444;
+    }
+
+    .ref-item {
+      padding-left: 1rem;
+      text-indent: -1rem;
+    }
+
+    @media print {
+      @page {
+        size: 841mm 594mm;
+        margin: 0;
+      }
+      html, body {
+        width: 841mm !important;
+        height: 594mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background-color: #eef2f7 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      .poster {
+        width: 1720px !important;
+        max-width: none !important;
+        transform: scale(1.48) !important;
+        transform-origin: center center !important;
+        margin: 0 !important;
+        gap: 1rem !important;
+      }
+      .poster-grid {
+        gap: 1rem !important;
+      }
+      .col {
+        gap: 1rem !important;
+      }
+      .card {
+        padding: 1.35rem !important;
+        gap: 0.75rem !important;
+      }
+      .header-card {
+        padding: 1.5rem !important;
+        gap: 2rem !important;
+      }
+      .authors-container {
+        gap: 1rem !important;
+        margin-top: 0.5rem !important;
+        padding-top: 0.5rem !important;
+      }
+      .author-name {
+        font-size: 0.85rem !important;
+      }
+      .author-details {
+        font-size: 0.65rem !important;
+        line-height: 1.25 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="poster">
+    
+    <!-- HEADER CARD -->
+    <div class="header-card">
+      <div class="logo-container">
+        <div class="logo-text-top">
+          <!-- Mortarboard Icon -->
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+          BINUS
+        </div>
+        <div class="logo-text-bottom">UNIVERSITY</div>
+      </div>
+      <div class="header-text">
+        <h1>Evaluating the Impact of Post-Training Quantization on Inference Throughput and Accuracy in Gemma 4 e2B</h1>
+        <div class="authors-container">
+          <div class="author-block">
+            <div class="author-name">1st Aaron Levy Mandari</div>
+            <div class="author-details">
+              COMPUTER SCIENCE (of Affiliation)<br>
+              BINUS (of Affiliation)<br>
+              TANGERANG, INDONESIA<br>
+              aaron.mandari@binus.ac.id
+            </div>
+          </div>
+          <div class="author-block">
+            <div class="author-name">2nd Yutty Dharma Saputra</div>
+            <div class="author-details">
+              COMPUTER SCIENCE (of Affiliation)<br>
+              BINUS (of Affiliation)<br>
+              TANGERANG, INDONESIA<br>
+              yutty.saputra@binus.ac.id
+            </div>
+          </div>
+          <div class="author-block">
+            <div class="author-name">3rd Muhammad Ariq Raffi</div>
+            <div class="author-details">
+              COMPUTER SCIENCE (of Affiliation)<br>
+              BINUS (of Affiliation)<br>
+              TANGERANG, INDONESIA<br>
+              muhammad.raffi@binus.ac.id
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER GRID BODY -->
+    <div class="poster-grid">
+      
+      <!-- COLUMN 1: LEFT -->
+      <div class="col">
+        
+        <!-- Image decoration -->
+        <img class="side-img" src="gemma-4_blog_open_source_keyword_header-light.png" alt="Gemma 4 Blog Open Source Keyword Header" />
+
+        <!-- Background (Dark card) -->
+        <div class="card dark">
+          <div class="card-title">Background</div>
+          <ul class="checklist">
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>LLM transition from cloud APIs to local edge deployment requires compression to overcome GPU VRAM limits.</div>
+            </li>
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>Weight quantization (PTQ) significantly reduces VRAM footprint but risks degrading logical coherence.</div>
+            </li>
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>This study benchmarks uncompressed bfloat16 against 4-bit quantized GGUF variants to find the optimal trade-off.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Dataset (Dark card) -->
+        <div class="card dark">
+          <div class="card-title">Testing Dataset</div>
+          <p style="font-size: 0.8rem; line-height: 1.45; color: rgba(255,255,255,0.85);">
+            <strong>Inference & Validation Dataset:</strong><br>
+            A logic evaluation suite of 10 zero-shot multiple-choice questions designed to isolate cognitive reasoning gaps under quantization. Answers are graded binarily (0 or 1) to measure absolute accuracy.
+          </p>
+        </div>
+
+        <!-- Methodology (White card) -->
+        <div class="card">
+          <div class="card-title">Methodology</div>
+          
+          <div style="font-size: 0.85rem; font-weight: bold; color: var(--text-dark);">Research Workflow:</div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+            Gemma 4 e2B Models &rarr; Load via Ollama (BF16 & Q4) &rarr; Execute 10 Zero-Shot Logic Puzzles &rarr; Log Telemetry (btop & ollama ps) &rarr; Evaluate Speed & Accuracy.
+          </p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;">Quantization Bits</td>
+                  <td>Independent</td>
+                  <td>BF16 vs. Q4_K_M GGUF</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">Throughput (TPS)</td>
+                  <td>Dependent</td>
+                  <td>Tokens per second generated</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">Logic Accuracy</td>
+                  <td>Dependent</td>
+                  <td>Benchmark test score (0-10)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">GPU Specs</td>
+                  <td>Control</td>
+                  <td>Linux OS, Dedicated 8GB VRAM</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMN 2: CENTER -->
+      <div class="col">
+        
+        <!-- Research Objectives (White card) -->
+        <div class="card">
+          <div class="card-title">Research Objectives</div>
+          <ul class="checklist">
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>Measure generation speed (TPS) and Time to First Token (TTFT) across quantization levels (BF16 vs. 4-bit).</div>
+            </li>
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>Quantify the "Intelligence Loss" under PTQ using a zero-shot logical accuracy evaluation benchmark.</div>
+            </li>
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>Evaluate CPU and GPU loads during local edge inference to characterize hardware offload behaviors.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- KEY RESULTS BANNER -->
+        <div class="hasil-utama-title">Key Results</div>
+
+        <!-- Performance Metrics (White card) -->
+        <div class="card">
+          <div class="card-title">Performance Metrics: Throughput</div>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Tokens Per Second (TPS) results show a massive performance gain when the model executes entirely on the GPU:
+          </p>
+
+          <div class="fig-placeholder">
+            <div class="fig-title">Throughput (Tokens Per Second)</div>
+            <div class="bar-chart">
+              <div class="bar-row">
+                <div class="bar-label">Gemma 4 e2B Q4</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 100%;"></div>
+                </div>
+                <div class="bar-val" style="color: var(--success);">106.8 TPS</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">Gemma 4 e2B BF16</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 24%; background: var(--accent-blue);"></div>
+                </div>
+                <div class="bar-val">25.5 TPS</div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted);">
+            4-bit quantization yields a **4.2x speedup** by fitting the entire model (7.7 GB) inside the GPU's VRAM.
+          </p>
+        </div>
+
+        <!-- Hardware Telemetry & Resource Utilization (White card) -->
+        <div class="card">
+          <div class="card-title">Hardware Telemetry & Resource Utilization</div>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Actual system telemetry captured during active inference (derived from btop):
+          </p>
+          
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Telemetry Metric</th>
+                  <th style="text-align: center;">Gemma Q4</th>
+                  <th style="text-align: center;">Gemma BF16</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CPU Core Utilization</td>
+                  <td style="text-align: center;">14%</td>
+                  <td style="text-align: center; color: var(--warn); font-weight: 600;">28%</td>
+                </tr>
+                <tr>
+                  <td>CPU Package Temp</td>
+                  <td style="text-align: center;">63&deg;C</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">82&deg;C</td>
+                </tr>
+                <tr>
+                  <td>CPU Package Power Draw</td>
+                  <td style="text-align: center;">22.9 W</td>
+                  <td style="text-align: center;">34.9 W</td>
+                </tr>
+                <tr>
+                  <td>GPU0 Core Utilization</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">85%</td>
+                  <td style="text-align: center;">37%</td>
+                </tr>
+                <tr>
+                  <td>GPU0 Core Temperature</td>
+                  <td style="text-align: center;">56&deg;C</td>
+                  <td style="text-align: center;">68&deg;C</td>
+                </tr>
+                <tr>
+                  <td>GPU0 Core Power Draw</td>
+                  <td style="text-align: center;">57.0 W</td>
+                  <td style="text-align: center;">34.6 W</td>
+                </tr>
+                <tr>
+                  <td>GPU0 VRAM Allocated</td>
+                  <td style="text-align: center;">7.4 GB</td>
+                  <td style="text-align: center;">4.9 GB (offloaded)</td>
+                </tr>
+                <tr>
+                  <td>System RAM Allocation</td>
+                  <td style="text-align: center;">4.42 GB</td>
+                  <td style="text-align: center; color: var(--warn); font-weight: 600;">10.6 GB</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Offloading parts of the 11 GB BF16 model to CPU memory creates bus bottlenecking, limiting GPU utility and raising CPU temps to **82°C**.
+          </p>
+        </div>
+
+        <!-- Summary (Dark card) -->
+        <div class="card dark">
+          <div class="card-title">Summary</div>
+          <ul class="checklist">
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>4-bit quantization (Q4) delivers 4.2x faster inference and fits inside GPU VRAM, ideal for edge systems.</div>
+            </li>
+            <li class="checklist-item">
+              <div class="checklist-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>The uncompressed model (BF16) preserves 90% accuracy (vs Q4 80%), but suffers severe lag due to CPU offloading.</div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- COLUMN 3: RIGHT -->
+      <div class="col">
+        
+        <!-- Research Implications (White card) -->
+        <div class="card">
+          <div class="card-title">Research Implications</div>
+          <p style="font-size: 0.85rem; font-weight: bold; color: var(--accent-blue); margin-bottom: -0.25rem;">Implication 1</p>
+          <p style="font-size: 0.825rem;">4-bit quantization is highly effective for accelerating inference throughput and saving VRAM on consumer GPUs.</p>
+          
+          <p style="font-size: 0.85rem; font-weight: bold; color: var(--accent-blue); margin-bottom: -0.25rem;">Implication 2</p>
+          <p style="font-size: 0.825rem;">Offloading parts of a model to CPU (due to memory overflow) triggers a massive performance cliff and high thermal loads.</p>
+          
+          <p style="font-size: 0.85rem; font-weight: bold; color: var(--accent-blue); margin-bottom: -0.25rem;">Implication 3</p>
+          <p style="font-size: 0.825rem;">Quantized models are not recommended for high-precision logic tasks due to structural weight-precision loss.</p>
+          
+          <p style="font-size: 0.85rem; font-weight: bold; color: var(--accent-blue); margin-bottom: -0.25rem;">Implication 4</p>
+          <p style="font-size: 0.825rem;">While Q4 works well for casual conversational chat, it exhibits critical errors in spatial reasoning and bitwise math.</p>
+        </div>
+
+        <!-- Zero-Shot Accuracy Evaluation (White card) -->
+        <div class="card">
+          <div class="card-title">Zero-Shot Accuracy Evaluation</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Logical Domain</th>
+                  <th style="text-align: center;">Correct Answer</th>
+                  <th style="text-align: center;">BF16</th>
+                  <th style="text-align: center;">Q4</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Q1</td>
+                  <td>State Tracking (Coin)</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">A</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">A</td>
+                </tr>
+                <tr>
+                  <td>Q2</td>
+                  <td>Knight/Knave/Spy</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                </tr>
+                <tr>
+                  <td>Q3</td>
+                  <td>Modular Arithmetic</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                </tr>
+                <tr>
+                  <td>Q4</td>
+                  <td>Recursive Bitwise</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">C</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--warn); font-weight: 700;">C*</td>
+                </tr>
+                <tr>
+                  <td>Q5</td>
+                  <td>Cheryl's Birthday</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">B</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">A</td>
+                </tr>
+                <tr>
+                  <td>Q6</td>
+                  <td>Causal/Counterfactual</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                </tr>
+                <tr>
+                  <td>Q7</td>
+                  <td>3D Die Rotation</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">C</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">A</td>
+                </tr>
+                <tr>
+                  <td>Q8</td>
+                  <td>Game Theory SPNE</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">C</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">C</td>
+                </tr>
+                <tr>
+                  <td>Q9</td>
+                  <td>Linguistic Negation</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">B</td>
+                </tr>
+                <tr>
+                  <td>Q10</td>
+                  <td>Bayesian Probability</td>
+                  <td style="text-align: center; font-weight: 600; color: var(--text-dark);">A</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size: 0.68rem; color: var(--text-muted); margin-top: -0.25rem; line-height: 1.3;">
+            *Note: Q4 model arrived at the correct answer in Q4 via flawed bitwise calculations (16 & 8 = 8), only succeeding due to option constraints.
+          </p>
+
+          <div style="font-size: 0.9rem; font-weight: 800; color: var(--accent-blue); margin-top: 0.25rem; border-top: 1px solid var(--border-light); padding-top: 0.75rem;">
+            Benchmark Accuracy Summary
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model Variant</th>
+                  <th style="text-align: center;">Right (Correct)</th>
+                  <th style="text-align: center;">Wrong (Incorrect)</th>
+                  <th style="text-align: center;">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;">Gemma 4 e2B BF16</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">9</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">1</td>
+                  <td style="text-align: center; font-weight: 700;">90%</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">Gemma 4 e2B Q4</td>
+                  <td style="text-align: center; color: var(--success); font-weight: 700;">8</td>
+                  <td style="text-align: center; color: var(--error); font-weight: 700;">2</td>
+                  <td style="text-align: center; font-weight: 700;">80%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- References (White card) -->
+        <div class="card">
+          <div class="card-title" style="font-size: 1.15rem;">References</div>
+          <div class="ref-list">
+            <div class="ref-item">
+              [1] Dettmers, T., Lewis, M., Belkada, Y., and Zettlemoyer, L. (2022). LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale. arXiv preprint, arXiv:2208.07339.
+            </div>
+            <div class="ref-item">
+              [2] Frantar, E., Ashkboos, S., Hoefler, T., and Alistarh, D. (2023). GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers. ICLR 2023.
+            </div>
+            <div class="ref-item">
+              [3] IEEE. (2026). IEEE Thesaurus (January 2026 Edition). IEEE Publications.
+            </div>
+            <div class="ref-item">
+              [4] Oates, B. J., Griffiths, M., and McLean, R. (2022). Researching Information Systems and Computing. SAGE Publications.
+            </div>
+            <div class="ref-item">
+              [5] Xiao, G., Lin, J., Seznec, M., Wu, H., Demouth, J., and Han, S. (2023). SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models. Proceedings of the 40th ICML Conference.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

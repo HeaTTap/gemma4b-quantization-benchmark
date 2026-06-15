@@ -381,187 +381,128 @@
     <section id="accuracy" style="margin-top: 4.5rem;">
       <h2 style="margin-bottom: 1.5rem; color: #fff; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">II. Zero-Shot Logical Accuracy Benchmark</h2>
       
-      <div class="grid grid-2">
-        <!-- Table III: BF16 Accuracy -->
+      <div class="grid">
+        <!-- Table III: Side-by-Side Accuracy -->
         <div class="card">
-          <div class="card-title accuracy-title">Table III. Gemma 4B BF16 Benchmark Results</div>
+          <div class="card-title accuracy-title">Table III. Zero-Shot Multiple Choice Accuracy Results (Side-by-Side)</div>
           <div class="table-container">
             <table>
               <thead>
                 <tr>
                   <th>No.</th>
                   <th>Logical Domain</th>
-                  <th>Correct</th>
-                  <th>Model Answer</th>
-                  <th>Status</th>
+                  <th style="text-align: center;">Correct Answer</th>
+                  <th style="text-align: center;">BF16 Model Choice</th>
+                  <th style="text-align: center;">Q4 Model Choice</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Q1</td>
                   <td>State Tracking (Coin)</td>
-                  <td>A</td>
-                  <td>A (Red box)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">A</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">A</td>
                 </tr>
                 <tr>
                   <td>Q2</td>
                   <td>Knight/Knave/Spy Logic</td>
-                  <td>B</td>
-                  <td>B (Yolanda)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
                 </tr>
                 <tr>
                   <td>Q3</td>
                   <td>Modular Arithmetic</td>
-                  <td>B</td>
-                  <td>B (14)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
                 </tr>
                 <tr>
                   <td>Q4</td>
                   <td>Recursive Bitwise</td>
-                  <td>C</td>
-                  <td>C (24)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">C</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--warning-color); font-weight: 700;">C*</td>
                 </tr>
                 <tr>
                   <td>Q5</td>
                   <td>Cheryl's Birthday</td>
-                  <td>B</td>
-                  <td>A (May 16)</td>
-                  <td><span class="badge badge-error">Incorrect</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">B</td>
+                  <td style="text-align: center; color: var(--error-color); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--error-color); font-weight: 700;">A</td>
                 </tr>
                 <tr>
                   <td>Q6</td>
                   <td>Causal / Counterfactual</td>
-                  <td>B</td>
-                  <td>B (True)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
                 </tr>
                 <tr>
                   <td>Q7</td>
                   <td>3D Die Rotation</td>
-                  <td>C</td>
-                  <td>C (5)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">C</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--error-color); font-weight: 700;">A</td>
                 </tr>
                 <tr>
                   <td>Q8</td>
                   <td>Game Theory SPNE</td>
-                  <td>C</td>
-                  <td>C (E, A)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">C</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">C</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">C</td>
                 </tr>
                 <tr>
                   <td>Q9</td>
                   <td>Linguistic Negation</td>
-                  <td>B</td>
-                  <td>B (Scenario B)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">B</td>
                 </tr>
                 <tr>
                   <td>Q10</td>
                   <td>Bayesian Probability</td>
-                  <td>A</td>
-                  <td>A (5%)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="text-align: center; font-weight: 600; color: #fff;">A</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">A</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">A</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="footnote">Overall Score: <strong>90% (9/10) Correct</strong>. Failed Cheryl's Birthday (epistemic reasoning).</div>
+          <div class="footnote">*Note: Q4 model arrived at the correct answer through a flawed mathematical trace (evaluating 16 & 8 = 8), only succeeding due to options constraints.</div>
         </div>
 
-        <!-- Table IV: Q4 Accuracy -->
+        <!-- Table IV: Accuracy Summary -->
         <div class="card">
-          <div class="card-title accuracy-title">Table IV. Gemma 4B Q4 Benchmark Results</div>
+          <div class="card-title accuracy-title">Table IV. Zero-Shot Logic Benchmark Accuracy Summary</div>
           <div class="table-container">
             <table>
               <thead>
                 <tr>
-                  <th>No.</th>
-                  <th>Logical Domain</th>
-                  <th>Correct</th>
-                  <th>Model Answer</th>
-                  <th>Status</th>
+                  <th>Model Variant</th>
+                  <th style="text-align: center;">Right (Correct)</th>
+                  <th style="text-align: center;">Wrong (Incorrect)</th>
+                  <th style="text-align: center;">Accuracy Score</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Q1</td>
-                  <td>State Tracking (Coin)</td>
-                  <td>A</td>
-                  <td>A (Red box)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="font-weight: 600; color: #c084fc;">Gemma 4B BF16 (Baseline)</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">9</td>
+                  <td style="text-align: center; color: var(--error-color); font-weight: 700;">1</td>
+                  <td style="text-align: center; font-weight: 700; color: #fff;">90% (9/10)</td>
                 </tr>
                 <tr>
-                  <td>Q2</td>
-                  <td>Knight/Knave/Spy Logic</td>
-                  <td>B</td>
-                  <td>B (Yolanda)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
-                </tr>
-                <tr>
-                  <td>Q3</td>
-                  <td>Modular Arithmetic</td>
-                  <td>B</td>
-                  <td>B (14)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
-                </tr>
-                <tr>
-                  <td>Q4</td>
-                  <td>Recursive Bitwise</td>
-                  <td>C</td>
-                  <td>C (24)</td>
-                  <td><span class="badge badge-warning">Correct*</span></td>
-                </tr>
-                <tr>
-                  <td>Q5</td>
-                  <td>Cheryl's Birthday</td>
-                  <td>B</td>
-                  <td>A (May 16)</td>
-                  <td><span class="badge badge-error">Incorrect</span></td>
-                </tr>
-                <tr>
-                  <td>Q6</td>
-                  <td>Causal / Counterfactual</td>
-                  <td>B</td>
-                  <td>B (True)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
-                </tr>
-                <tr>
-                  <td>Q7</td>
-                  <td>3D Die Rotation</td>
-                  <td>C</td>
-                  <td>A (1)</td>
-                  <td><span class="badge badge-error">Incorrect</span></td>
-                </tr>
-                <tr>
-                  <td>Q8</td>
-                  <td>Game Theory SPNE</td>
-                  <td>C</td>
-                  <td>C (E, A)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
-                </tr>
-                <tr>
-                  <td>Q9</td>
-                  <td>Linguistic Negation</td>
-                  <td>B</td>
-                  <td>B (Scenario B)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
-                </tr>
-                <tr>
-                  <td>Q10</td>
-                  <td>Bayesian Probability</td>
-                  <td>A</td>
-                  <td>A (5%)</td>
-                  <td><span class="badge badge-success">Correct</span></td>
+                  <td style="font-weight: 600; color: #60a5fa;">Gemma 4B Q4 (Quantized)</td>
+                  <td style="text-align: center; color: var(--success-color); font-weight: 700;">8</td>
+                  <td style="text-align: center; color: var(--error-color); font-weight: 700;">2</td>
+                  <td style="text-align: center; font-weight: 700; color: #fff;">80% (8/10)</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="footnote">Overall Score: <strong>80% (8/10) Correct</strong>. *Q4 model arrived at the correct answer through a flawed mathematical trace.</div>
+          <div class="footnote">The uncompressed model (BF16) preserves higher cognitive fidelity, but at the cost of VRAM limits and CPU offloading lag.</div>
         </div>
       </div>
     </section>
